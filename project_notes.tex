@@ -1,0 +1,72 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath}
+\usepackage{parskip}
+
+\author{Euclid Kosasih}
+\date{September 1, 2017}
+\title{Notes for ELEC4402 Project}
+
+\begin{document}
+\maketitle
+\section{Noise PSD}
+\begin{equation}
+	N_0 = \frac{(V_{av})^2}{R}
+\end{equation}
+Where $N_0$ is the power spectral density (PSD) of the noise signal in $W/Hz$ and $V_{av}$ is the average voltage of the \textit{noise} signal in the frequency domain (use FFT). Note that $V_{av}$ is measured using the \texttt{Wideband True RMS module}, it is not calculated.
+
+\section{Clock Signal}
+Display the clock signal to measure $R_b$. Do not rely on ``eyeballing'' 1 bit on the modulated signal. The clock signal may be weak, so if this is the case, use the \texttt{ADDER} module to amplify the signal. 
+
+The master clock is 8.333kHz, however, the bit clock is 2kHz, since
+\begin{equation}
+	R_b = \frac{MCLK}{4}
+\end{equation}
+
+\section{BER Calculations}
+\begin{equation}
+	BER = \frac{N_e}{N_t}
+\end{equation}
+Where $BER$ is the bit error rate, $N_e$ is the number of erroneous bits and $N_b$ is the total number of bits transmitted.
+
+\begin{equation}
+	\frac{E_b}{N_0} = \left(\frac{V_{av,s}}{V_{av,n,f}}\right)^2T_b
+\end{equation}
+Where $\frac{E_b}{N_0}$ is the signal to noise ratio (SNR), $V_{av,s}$ is the average voltage of the signal, $V_{av,n,f}$ is the average voltage of the noise signal in the frequency domain and $T_b$ is the time period for each bit.
+
+Note that the graph used is log-normal. Example calculation:
+\begin{align}
+	BER &= \log_{10}{\left(\frac{538}{2000}\right)}\\
+	\frac{E_n}{N_0}\ \mathrm{dB} &= 10\log_{10}
+\end{align}
+
+\section{Signal Constellation}
+The signal constellation gives information on the symbol distance $d$ which in turn gives information on the bit error rate. 
+	\begin{equation}
+		BER = Q\left(\sqrt{\frac{d}{\cdots}}\right) \label{ber_d}
+	\end{equation}
+As $d$ decreases in eqn.~\eqref{ber_d}, $BER$ will increase.
+
+\section{Troubleshooting}
+\begin{itemize}
+	\item Reset the \texttt{Line Decoder} each time a new clock is given.
+	\item Use a local signal generator to avoid propagation delay.
+	\item Use the \texttt{Phase Shifter} module $\phi = \pm 180^{\circ}$ if the signal is out of sync.
+	\item Use the output of the \texttt{Error Counting Utilities} to reset the signal generator if message signal and demodulated signal are not in sync.
+\end{itemize}
+
+\section{Common Lab Test Questions}
+\begin{enumerate}
+	\item Sketch the (provided) modulated signal
+	\item Demodulate the signal and sketch its spectra and temporal waveform
+	\item Theory question on performance
+	\item Identify which line encoding method was used
+	\item Sketch block diagram of demodulator
+\end{enumerate}
+
+\section{Miscellaneous Notes for Future Labs}
+\begin{itemize}
+	\item Know which input/output of which module corresponds to the message, modulating, carrier and modulated signals.
+	\item Know the demodulator circuit well since this will be the one used in the test (you will not be modulating your own signal).
+\end{itemize}
+
+\end{document}
